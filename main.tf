@@ -13,40 +13,39 @@ provider "azurerm" {
     features {}
 }
 
-resource "azurerm_resource_group" "lab" {
+data "azurerm_resource_group" "lab" {
     name = "rg-tf-lab"
-    location = "West Europe"
 }
 
 resource "azurerm_virtual_network" "vnet" {
-  name                = "vnet-demo"
+  name                = "${var.prefix}-vnet-demo"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.lab.location
-  resource_group_name = azurerm_resource_group.lab.name
+  location            = data.azurerm_resource_group.lab.location
+  resource_group_name = data.azurerm_resource_group.lab.name
 }
 
 resource "azurerm_subnet" "subnet" {
-  name                 = "subnet-demo"
-  resource_group_name  = azurerm_resource_group.lab.name
+  name                 = "${var.prefix}-subnet-demo"
+  resource_group_name  = data.azurerm_resource_group.lab.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
 resource "azurerm_public_ip" "pip" {
-  name                = "pip-demo"
-  location            = azurerm_resource_group.lab.location
-  resource_group_name = azurerm_resource_group.lab.name
+  name                = "${var.prefix}-pip-demo"
+  location            = data.azurerm_resource_group.lab.location
+  resource_group_name = data.azurerm_resource_group.lab.name
   allocation_method   = "Static"
   sku                 = "Standard"
 }
 
 resource "azurerm_network_interface" "nic" {
-  name                = "nic-demo"
-  location            = azurerm_resource_group.lab.location
-  resource_group_name = azurerm_resource_group.lab.name
+  name                = "${var.prefix}-nic-demo"
+  location            = data.azurerm_resource_group.lab.location
+  resource_group_name = data.azurerm_resource_group.lab.name
 
   ip_configuration {
-    name                          = "ipconfig1"
+    name                          = "${var.prefix}-ipconfig1"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.pip.id
@@ -54,9 +53,9 @@ resource "azurerm_network_interface" "nic" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name = "vm-demo"
-  resource_group_name = azurerm_resource_group.lab.name
-  location = azurerm_resource_group.lab.location
+  name = "${var.prefix}-vm-demo"
+  resource_group_name = data.azurerm_resource_group.lab.name
+  location = data.azurerm_resource_group.lab.location
   size = "Standard_B1s"
   admin_username      = "azureuser"
   network_interface_ids = [azurerm_network_interface.nic.id]
