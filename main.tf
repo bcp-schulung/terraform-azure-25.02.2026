@@ -53,7 +53,8 @@ resource "azurerm_network_interface" "nic" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                  = "${var.prefix}-vm-demo"
+  count                 = 2
+  name                  = "${var.prefix}-vm-demo-${count.index + 1}"
   resource_group_name   = data.azurerm_resource_group.lab.name
   location              = data.azurerm_resource_group.lab.location
   size                  = var.vm_size
