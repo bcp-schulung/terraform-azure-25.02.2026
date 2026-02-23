@@ -1,7 +1,21 @@
+# Student material / generated creds
 student-*
-
-# Credentials
 *-creds.json
 
+# Terraform working directory
 .terraform/
-.terraform.lock.hcl
+
+# Terraform state (never commit)
+**/*.tfstate
+**/*.tfstate.*
+.terraform.tfstate.lock.info
+
+# Terraform variables (often contain secrets)
+*.tfvars
+*.tfvars.json
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# NOTE: Keep .terraform.lock.hcl tracked (recommended)
