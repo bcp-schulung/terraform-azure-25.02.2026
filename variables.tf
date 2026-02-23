@@ -39,6 +39,12 @@ variable "private_ip_address_allocation" {
   default     = "Dynamic"
 }
 
+variable "vm_count" {
+  description = "Number of VMs (and matching NICs/Public IPs) to create."
+  type        = number
+  default     = 2
+}
+
 variable "vm_size" {
   description = "Azure VM size."
   type        = string

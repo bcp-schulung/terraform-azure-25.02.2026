@@ -32,7 +32,8 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_public_ip" "pip" {
-  name                = "${var.prefix}-pip-demo"
+  count               = var.vm_count
+  name                = "${var.prefix}-pip-demo-${count.index + 1}"
   location            = data.azurerm_resource_group.lab.location
   resource_group_name = data.azurerm_resource_group.lab.name
   allocation_method   = var.public_ip_allocation_method
@@ -40,26 +41,27 @@ resource "azurerm_public_ip" "pip" {
 }
 
 resource "azurerm_network_interface" "nic" {
-  name                = "${var.prefix}-nic-demo"
+  count               = var.vm_count
+  name                = "${var.prefix}-nic-demo-${count.index + 1}"
   location            = data.azurerm_resource_group.lab.location
   resource_group_name = data.azurerm_resource_group.lab.name
 
   ip_configuration {
-    name                          = "${var.prefix}-ipconfig1"
+    name                          = "${var.prefix}-ipconfig-${count.index + 1}"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = var.private_ip_address_allocation
-    public_ip_address_id          = azurerm_public_ip.pip.id
+    public_ip_address_id          = azurerm_public_ip.pip[count.index].id
   }
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  count                 = 2
+  count                 = var.vm_count
   name                  = "${var.prefix}-vm-demo-${count.index + 1}"
   resource_group_name   = data.azurerm_resource_group.lab.name
   location              = data.azurerm_resource_group.lab.location
   size                  = var.vm_size
   admin_username        = var.admin_username
-  network_interface_ids = [azurerm_network_interface.nic.id]
+  network_interface_ids = [azurerm_network_interface.nic[count.index].id]
 
   disable_password_authentication = true
 
