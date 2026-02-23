@@ -5,6 +5,9 @@ student-*
 # Terraform working directory
 .terraform/
 
+# Provider lockfile (kept ignored to match previous repo behavior)
+.terraform.lock.hcl
+
 # Terraform state (never commit)
 **/*.tfstate
 **/*.tfstate.*
@@ -17,5 +20,3 @@ student-*
 # Terraform crash logs
 crash.log
 crash.*.log
-
-# NOTE: Keep .terraform.lock.hcl tracked (recommended)
