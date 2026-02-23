@@ -2,3 +2,6 @@ student-*
 
 # Credentials
 *-creds.json
+
+.terraform/
+.terraform.lock.hcl
