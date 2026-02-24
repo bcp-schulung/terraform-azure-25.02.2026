@@ -27,11 +27,6 @@ variable "admin_username" {
   default     = "azureuser"
 }
 
-variable "ssh_public_key_path" {
-  description = "Path to the SSH public key file used for VM access. Supports ~ via pathexpand in main.tf."
-  type        = string
-  default     = "~/.ssh/id_rsa.pub"
-}
 
 variable "os_disk_caching" {
   description = "OS disk caching mode."
@@ -93,4 +88,9 @@ variable "subnet_id" {
 variable "index" {
   description = "Current index"
   type = number
+}
+
+variable "ssh_public_key" {
+  description = "name azure public key"
+  type = string  
 }

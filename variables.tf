@@ -14,3 +14,16 @@ variable "vm_count" {
   type        = number
   default     = 2
 }
+
+
+variable "ssh_key_name" {
+  description = "Name of the existing SSH public key resource in Azure."
+  type        = string
+  default     = "test-key"
+}
+
+variable "ssh_key_resource_group" {
+  description = "Name of the resource group where the existing SSH public key is located."
+  type        = string
+  default     = "rg-tf-lab"
+}
