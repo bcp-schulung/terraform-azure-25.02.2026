@@ -89,3 +89,8 @@ variable "subnet_id" {
   description = "ID of the subnet"
   type = string
 }
+
+variable "index" {
+  description = "Current index"
+  type = number
+}

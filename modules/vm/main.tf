@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "pip" {
-  name                = "${var.prefix}-pip-demo"
+  name                = "${var.prefix}-pip-demo-${var.index}"
   location            = var.rg_location
   resource_group_name = var.rg_name
   allocation_method   = var.public_ip_allocation_method
@@ -7,7 +7,7 @@ resource "azurerm_public_ip" "pip" {
 }
 
 resource "azurerm_network_interface" "nic" {
-  name                = "${var.prefix}-nic-demo"
+  name                = "${var.prefix}-nic-demo-${var.index}"
   location            = var.rg_location
   resource_group_name = var.rg_name
 
@@ -20,7 +20,7 @@ resource "azurerm_network_interface" "nic" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                  = "${var.prefix}-vm-demo"
+  name                  = "${var.prefix}-vm-demo-${var.index}"
   resource_group_name   = var.rg_name
   location              = var.rg_location
   size                  = var.vm_size

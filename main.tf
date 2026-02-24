@@ -26,10 +26,12 @@ module "network" {
 }
 
 module "vm" {
+  count = var.vm_count
   source = "./modules/vm"
 
   prefix = var.prefix
   subnet_id = module.network.subnet_id
   rg_location = data.azurerm_resource_group.lab.location
   rg_name     = data.azurerm_resource_group.lab.name
+  index = count.index
 }
