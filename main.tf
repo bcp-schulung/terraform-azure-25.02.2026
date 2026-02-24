@@ -25,54 +25,11 @@ module "network" {
   rg_name     = data.azurerm_resource_group.lab.name
 }
 
-resource "azurerm_public_ip" "pip" {
-  count               = var.vm_count
-  name                = "${var.prefix}-pip-demo-${count.index + 1}"
-  location            = data.azurerm_resource_group.lab.location
-  resource_group_name = data.azurerm_resource_group.lab.name
-  allocation_method   = var.public_ip_allocation_method
-  sku                 = var.public_ip_sku
-}
+module "vm" {
+  source = "./modules/vm"
 
-resource "azurerm_network_interface" "nic" {
-  count               = var.vm_count
-  name                = "${var.prefix}-nic-demo-${count.index + 1}"
-  location            = data.azurerm_resource_group.lab.location
-  resource_group_name = data.azurerm_resource_group.lab.name
-
-  ip_configuration {
-    name                          = "${var.prefix}-ipconfig-${count.index + 1}"
-    subnet_id                     = module.network.subnet_id
-    private_ip_address_allocation = var.private_ip_address_allocation
-    public_ip_address_id          = azurerm_public_ip.pip[count.index].id
-  }
-}
-
-resource "azurerm_linux_virtual_machine" "vm" {
-  count                 = var.vm_count
-  name                  = "${var.prefix}-vm-demo-${count.index + 1}"
-  resource_group_name   = data.azurerm_resource_group.lab.name
-  location              = data.azurerm_resource_group.lab.location
-  size                  = var.vm_size
-  admin_username        = var.admin_username
-  network_interface_ids = [azurerm_network_interface.nic[count.index].id]
-
-  disable_password_authentication = true
-
-  admin_ssh_key {
-    username   = var.admin_username
-    public_key = file(pathexpand(var.ssh_public_key_path))
-  }
-
-  os_disk {
-    caching              = var.os_disk_caching
-    storage_account_type = var.os_disk_storage_account_type
-  }
-
-  source_image_reference {
-    publisher = var.image_publisher
-    offer     = var.image_offer
-    sku       = var.image_sku
-    version   = var.image_version
-  }
+  prefix = var.prefix
+  subnet_id = module.network.subnet_id
+  rg_location = data.azurerm_resource_group.lab.location
+  rg_name     = data.azurerm_resource_group.lab.name
 }
