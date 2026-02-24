@@ -17,18 +17,12 @@ data "azurerm_resource_group" "lab" {
   name = var.resource_group_name
 }
 
-resource "azurerm_virtual_network" "vnet" {
-  name                = "${var.prefix}-vnet-demo"
-  address_space       = var.vnet_address_space
-  location            = data.azurerm_resource_group.lab.location
-  resource_group_name = data.azurerm_resource_group.lab.name
-}
+module "network" {
+  source = "./modules/network"
 
-resource "azurerm_subnet" "subnet" {
-  name                 = "${var.prefix}-subnet-demo"
-  resource_group_name  = data.azurerm_resource_group.lab.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = var.subnet_address_prefixes
+  prefix      = var.prefix
+  rg_location = data.azurerm_resource_group.lab.location
+  rg_name     = data.azurerm_resource_group.lab.name
 }
 
 resource "azurerm_public_ip" "pip" {
@@ -48,7 +42,7 @@ resource "azurerm_network_interface" "nic" {
 
   ip_configuration {
     name                          = "${var.prefix}-ipconfig-${count.index + 1}"
-    subnet_id                     = azurerm_subnet.subnet.id
+    subnet_id                     = module.network.subnet_id
     private_ip_address_allocation = var.private_ip_address_allocation
     public_ip_address_id          = azurerm_public_ip.pip[count.index].id
   }
