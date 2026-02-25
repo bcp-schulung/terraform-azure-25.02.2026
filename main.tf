@@ -21,10 +21,11 @@ module "vm" {
   count  = var.vm_count
   source = "./modules/vm"
 
-  prefix         = var.prefix
-  subnet_id      = module.network.subnet_id
-  rg_location    = data.azurerm_resource_group.lab.location
-  rg_name        = data.azurerm_resource_group.lab.name
-  ssh_public_key = data.azurerm_ssh_public_key.existing.public_key
-  index          = count.index
+  prefix           = var.prefix
+  subnet_id        = module.network.subnet_id
+  rg_location      = data.azurerm_resource_group.lab.location
+  rg_name          = data.azurerm_resource_group.lab.name
+  ssh_public_key   = data.azurerm_ssh_public_key.existing.public_key
+  ssh_allowed_cidr = var.ssh_allowed_cidr
+  index            = count.index
 }

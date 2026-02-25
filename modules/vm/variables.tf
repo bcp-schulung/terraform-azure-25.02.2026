@@ -3,6 +3,17 @@ variable "prefix" {
   type        = string
 }
 
+variable "enable_public_ip" {
+  description = "Whether to assign a public IP to the VM. Set to false to reduce attack surface."
+  type        = bool
+  default     = true
+}
+
+variable "ssh_allowed_cidr" {
+  description = "CIDR block allowed to SSH into the VM. Use a specific IP range for security."
+  type        = string
+}
+
 variable "public_ip_allocation_method" {
   description = "Allocation method for the Public IP (Static/Dynamic)."
   type        = string

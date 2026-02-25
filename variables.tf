@@ -27,3 +27,8 @@ variable "ssh_key_resource_group" {
   type        = string
   default     = "rg-tf-lab"
 }
+
+variable "ssh_allowed_cidr" {
+  description = "CIDR block allowed to SSH into the VMs. Use a specific IP range for security."
+  type        = string
+}
