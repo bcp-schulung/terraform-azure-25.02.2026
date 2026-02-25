@@ -260,7 +260,7 @@ run "vnet_address_space_rejects_invalid_cidr" {
   }
 
   variables {
-    vnet_address_space = ["invalid-cidr"]
+    vnet_address_space = ["999.999.999.999/16"]
   }
 
   expect_failures = [
@@ -345,7 +345,7 @@ run "subnet_address_rejects_invalid_cidr" {
   }
 
   variables {
-    subnet_address_prefixes = ["not-a-cidr"]
+    subnet_address_prefixes = ["999.999.999.999/24"]
   }
 
   expect_failures = [

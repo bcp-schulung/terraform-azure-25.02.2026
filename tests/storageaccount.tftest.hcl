@@ -15,7 +15,7 @@ run "storage_account_creates" {
   }
 
   assert {
-    condition     = azurerm_storage_account.example.infrastructure_encryption_enabled == false
+    condition     = azurerm_storage_account.example.infrastructure_encryption_enabled == true
     error_message = "Encryption must be enabled for storage accounts"
   }
   assert {

@@ -13,7 +13,14 @@ mock_provider "azurerm" {
 
   mock_data "azurerm_ssh_public_key" {
     defaults = {
-      public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7testkey..."
+      public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDummykey"
+    }
+  }
+
+  override_resource {
+    target = azurerm_linux_virtual_machine.vm
+    values = {
+      id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Compute/virtualMachines/test-vm"
     }
   }
 }

@@ -3,7 +3,14 @@
 # Tests for VM, NIC, NSG, Public IP creation and variable validations
 # =============================================================================
 
-mock_provider "azurerm" {}
+mock_provider "azurerm" {
+  override_resource {
+    target = azurerm_linux_virtual_machine.vm
+    values = {
+      id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Compute/virtualMachines/test-vm-demo-0"
+    }
+  }
+}
 
 variables {
   prefix                        = "test"
