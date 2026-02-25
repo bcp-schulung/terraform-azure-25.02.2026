@@ -25,7 +25,6 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
-# trivy:ignore:AVD-AZU-0068
 resource "azurerm_network_interface" "nic" {
   name                = "${var.prefix}-nic-demo-${var.index}"
   location            = var.rg_location
