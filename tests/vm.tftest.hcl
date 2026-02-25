@@ -1,10 +1,10 @@
 mock_provider "azurerm" {}
 
 variables {
-  prefix       = "test"
-  index        = 1
-  rg_location  = "westeurope"
-  rg_name      = "rg-test"
+  prefix      = "test"
+  index       = 1
+  rg_location = "westeurope"
+  rg_name     = "rg-test"
 
   vm_size        = "Standard_B2s"
   admin_username = "azureuser"
