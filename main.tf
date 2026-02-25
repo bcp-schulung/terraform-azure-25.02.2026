@@ -10,8 +10,8 @@ data "azurerm_ssh_public_key" "existing" {
 
 module "storage" {
   source = "./modules/storage"
-  
-  
+
+
   rg_location = data.azurerm_resource_group.lab.location
   rg_name     = data.azurerm_resource_group.lab.name
 

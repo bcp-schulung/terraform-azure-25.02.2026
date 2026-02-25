@@ -6,23 +6,23 @@ variable "rg_name" {
 
 variable "rg_location" {
   description = "Location of the ressource group"
-  type = string
+  type        = string
 }
 
 variable "acc_tier" {
   description = "Standard tier"
-  type = string
-  default = "Standard"
+  type        = string
+  default     = "Standard"
 }
 
 variable "acc_replication_type" {
-    description = "value"
-    type = string
-    default = "LRS"
+  description = "value"
+  type        = string
+  default     = "LRS"
 }
 
 variable "storageaccountname" {
   description = "Name of the storageaccount"
-  type = string
-  default = "test"
+  type        = string
+  default     = "test"
 }
