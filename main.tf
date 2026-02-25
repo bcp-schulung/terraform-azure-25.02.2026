@@ -5,7 +5,7 @@ data "azurerm_resource_group" "lab" {
 data "azurerm_ssh_public_key" "existing" {
 
   name                = var.ssh_key_name
-    resource_group_name = var.ssh_key_resource_group
+  resource_group_name = var.ssh_key_resource_group
 }
 
 
