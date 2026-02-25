@@ -9,11 +9,11 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name = "rg-tf-lab"
+    resource_group_name  = "rg-tf-lab"
     storage_account_name = "tfstate18056"
     container_name       = "tfstate"
     key                  = "terraform.tfstate"
-    use_azuread_auth = false
+    use_azuread_auth     = false
   }
 }
 

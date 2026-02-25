@@ -82,15 +82,15 @@ variable "rg_name" {
 
 variable "subnet_id" {
   description = "ID of the subnet"
-  type = string
+  type        = string
 }
 
 variable "index" {
   description = "Current index"
-  type = number
+  type        = number
 }
 
 variable "ssh_public_key" {
   description = "name azure public key"
-  type = string  
+  type        = string
 }
