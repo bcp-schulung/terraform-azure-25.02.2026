@@ -1,0 +1,33 @@
+name: Trivy Security Scan
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  trivy-scan:
+    name: Trivy Config & Filesystem Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy Config Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+      - name: Run Trivy Filesystem Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH,MEDIUM'

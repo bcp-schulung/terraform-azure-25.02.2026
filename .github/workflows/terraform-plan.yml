@@ -1,0 +1,124 @@
+name: Terraform Plan & Visualize
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform-plan:
+    name: Terraform Plan & Visualize
+    runs-on: ubuntu-latest
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Setup Graphviz
+        run: sudo apt-get install -y graphviz
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform plan -var="prefix=ci-plan" -out=tfplan -no-color 2>&1 | tee plan_output.txt
+          echo "plan_exitcode=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+
+      - name: Generate Plan JSON
+        run: terraform show -json tfplan > tfplan.json
+
+      - name: Generate Terraform Graph
+        run: |
+          terraform graph > graph.dot
+          dot -Tpng graph.dot -o terraform-graph.png
+          dot -Tsvg graph.dot -o terraform-graph.svg
+
+      - name: Create Plan Summary
+        id: plan-summary
+        run: |
+          echo "## Terraform Plan Summary" > plan_summary.md
+          echo "" >> plan_summary.md
+          echo "### Resource Changes" >> plan_summary.md
+          echo '```' >> plan_summary.md
+          terraform show -no-color tfplan | grep -E "^(  #|Plan:|No changes)" | head -50 >> plan_summary.md || echo "No changes detected" >> plan_summary.md
+          echo '```' >> plan_summary.md
+          echo "" >> plan_summary.md
+          echo "### Statistics" >> plan_summary.md
+          ADD=$(grep -c "will be created" plan_output.txt || echo "0")
+          CHANGE=$(grep -c "will be updated" plan_output.txt || echo "0")
+          DESTROY=$(grep -c "will be destroyed" plan_output.txt || echo "0")
+          echo "- **Resources to add:** $ADD" >> plan_summary.md
+          echo "- **Resources to change:** $CHANGE" >> plan_summary.md
+          echo "- **Resources to destroy:** $DESTROY" >> plan_summary.md
+
+      - name: Upload Plan Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-artifacts
+          path: |
+            tfplan
+            tfplan.json
+            terraform-graph.png
+            terraform-graph.svg
+            graph.dot
+            plan_output.txt
+            plan_summary.md
+          retention-days: 30
+
+      - name: Post Plan to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('plan_summary.md', 'utf8');
+            const planOutput = fs.readFileSync('plan_output.txt', 'utf8');
+            
+            const truncatedPlan = planOutput.length > 60000 
+              ? planOutput.substring(0, 60000) + '\n...(truncated)'
+              : planOutput;
+            
+            const body = `${summary}
+            
+            <details>
+            <summary>Full Plan Output</summary>
+            
+            \`\`\`hcl
+            ${truncatedPlan}
+            \`\`\`
+            
+            </details>
+            
+            📊 **Artifacts:** Download the plan visualization (PNG/SVG graph) from the Actions artifacts.
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Output Plan Summary
+        run: cat plan_summary.md >> $GITHUB_STEP_SUMMARY
