@@ -1,4 +1,4 @@
-name: Terraform Plan & Visualize
+name: Terraform Apply
 
 on:
   push:
