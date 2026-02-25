@@ -1,0 +1,7 @@
+# NSG is associated via azurerm_network_interface_security_group_association resource
+# Trivy's static analysis doesn't follow cross-resource references
+AVD-AZU-0068
+
+# Public IP is controlled by enable_public_ip variable (default: false)
+# When enabled, it's an intentional design choice
+AVD-AZU-0076

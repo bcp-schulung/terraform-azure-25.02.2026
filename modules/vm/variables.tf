@@ -6,7 +6,7 @@ variable "prefix" {
 variable "enable_public_ip" {
   description = "Whether to assign a public IP to the VM. Set to false to reduce attack surface."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "ssh_allowed_cidr" {
